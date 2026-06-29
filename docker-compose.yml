@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  auth-service:
+    image: localhost/auth-service:1.0
+    container_name: auth-service
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    networks:
+      - schedule-network
+
+  loan-service:
+    image: localhost/loan-service:1.0
+    container_name: loan-service
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    networks:
+      - schedule-network
+
+  user-service:
+    image: localhost/user-service:1.0
+    container_name: user-service
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    networks:
+      - schedule-network
+
+  api-gateway:
+    image: localhost/api-gateway:1.0
+    container_name: api-gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - loan-service
+      - user-service
+    networks:
+      - schedule-network
+
+networks:
+  schedule-network:
+    external: true
+    name: schedule-management-env_default
